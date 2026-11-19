@@ -1,0 +1,1888 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Garuda & World Football 5v5 — 2 Babak & Adu Penalti</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-choc: #3B2922;
+            --mocha: #654638;
+            --caramel: #A98265;
+            --sand: #D8C3A5;
+            --cream: #F5EFE5;
+            --card: #FFFDF9;
+            --subtle: #EDE4D5;
+            --red-accent: #D62828;
+            --red-dark: #9A1818;
+            --shadow: 0 14px 32px rgba(59, 41, 34, 0.14);
+        }
+
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: radial-gradient(circle at top, #FBF7F0 0%, var(--cream) 70%);
+            color: var(--dark-choc);
+            min-height: 100vh;
+            padding: 0.9rem;
+        }
+
+        h1, h2, h3, .btn, .score-num, .goal-banner-text, .intro-title {
+            font-family: 'Fredoka', cursive, sans-serif;
+            letter-spacing: 0.4px;
+        }
+
+        .app-wrapper {
+            max-width: 1060px;
+            margin: 0 auto;
+        }
+
+        .screen {
+            display: none;
+            animation: fadeScreen 0.25s ease;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeScreen {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ==================== LAYAR 1: PEMBUKA ==================== */
+        .intro-screen {
+            background: linear-gradient(145deg, #3B2922 0%, #583E32 100%);
+            color: var(--cream);
+            border-radius: 28px;
+            padding: 2.3rem 1.75rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+            border: 2px solid var(--sand);
+            margin-top: 1.2rem;
+        }
+
+        .intro-badge {
+            display: inline-block;
+            background: var(--red-accent);
+            color: #FFF;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.82rem;
+            padding: 0.35rem 0.95rem;
+            border-radius: 99px;
+            margin-bottom: 0.9rem;
+        }
+
+        .intro-title {
+            font-size: clamp(2rem, 6vw, 3.1rem);
+            line-height: 1.15;
+            margin-bottom: 0.8rem;
+        }
+
+        .intro-title span {
+            color: var(--sand);
+        }
+
+        .intro-desc {
+            max-width: 680px;
+            margin: 0 auto 1.3rem;
+            font-size: 0.96rem;
+            line-height: 1.6;
+            opacity: 0.94;
+        }
+
+        .intro-features {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.55rem;
+            margin-bottom: 1.7rem;
+        }
+
+        .feat-chip {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(216, 195, 165, 0.35);
+            padding: 0.42rem 0.8rem;
+            border-radius: 14px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        /* ==================== TOMBOL ==================== */
+        .btn {
+            border: none;
+            border-radius: 14px;
+            padding: 0.65rem 1.1rem;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: transform 0.12s ease;
+        }
+
+        .btn:active {
+            transform: translateY(2px);
+        }
+
+        .btn-lg {
+            padding: 0.85rem 1.6rem;
+            font-size: 1rem;
+        }
+
+        .btn-sm {
+            padding: 0.42rem 0.78rem;
+            font-size: 0.78rem;
+        }
+
+        .btn-primary {
+            background: var(--red-accent);
+            color: #FFF;
+            box-shadow: 0 4px 0 var(--red-dark);
+        }
+
+        .btn-red {
+            background: var(--red-accent);
+            color: #FFF;
+            box-shadow: 0 3px 0 var(--red-dark);
+        }
+
+        .btn-dark {
+            background: var(--dark-choc);
+            color: var(--cream);
+            box-shadow: 0 3px 0 #1E130F;
+        }
+
+        .btn-ghost {
+            background: var(--subtle);
+            color: var(--dark-choc);
+            border: 1.5px solid var(--sand);
+        }
+
+        /* ==================== LAYAR 2: PERSIAPAN TIM ==================== */
+        .setup-screen {
+            background: var(--card);
+            border: 2px solid var(--sand);
+            border-radius: 26px;
+            padding: 1.3rem;
+            box-shadow: var(--shadow);
+        }
+
+        .screen-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .screen-head h2 {
+            font-size: 1.35rem;
+        }
+
+        .pill-tag {
+            background: var(--subtle);
+            border: 1.5px solid var(--sand);
+            padding: 0.28rem 0.75rem;
+            border-radius: 99px;
+            font-size: 0.78rem;
+            font-weight: 800;
+            color: var(--mocha);
+        }
+
+        .setup-top-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 0.85rem;
+            margin-bottom: 1rem;
+        }
+
+        .teams-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .team-card {
+            background: var(--cream);
+            border: 1.5px solid var(--sand);
+            border-radius: 20px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.72rem;
+        }
+
+        .team-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .team-badge {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.74rem;
+            padding: 0.24rem 0.65rem;
+            border-radius: 99px;
+            color: #FFF;
+        }
+
+        .left-badge { background: var(--red-accent); }
+        .right-badge { background: var(--dark-choc); }
+
+        .roster-count {
+            font-weight: 800;
+            font-size: 0.8rem;
+            color: var(--mocha);
+        }
+
+        .field-box label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: var(--mocha);
+            margin-bottom: 0.25rem;
+        }
+
+        .field-box select {
+            width: 100%;
+            padding: 0.58rem 0.72rem;
+            border-radius: 12px;
+            border: 1.5px solid var(--sand);
+            background: var(--card);
+            color: var(--dark-choc);
+            font-family: 'Nunito', sans-serif;
+            font-weight: 800;
+            font-size: 0.84rem;
+        }
+
+        .setup-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.85rem;
+            flex-wrap: wrap;
+            background: var(--subtle);
+            padding: 0.85rem 1rem;
+            border-radius: 16px;
+        }
+
+        .level-summary {
+            font-size: 0.83rem;
+            font-weight: 800;
+            color: var(--mocha);
+        }
+
+        /* ==================== LAYAR 3: GAMEPLAY ==================== */
+        .hud-bar {
+            background: linear-gradient(135deg, #3B2922 0%, #583E32 100%);
+            color: var(--cream);
+            border-radius: 20px;
+            padding: 0.7rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.65rem;
+            flex-wrap: wrap;
+            box-shadow: var(--shadow);
+            margin-bottom: 0.75rem;
+        }
+
+        .hud-left-group {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+        }
+
+        .hud-title {
+            font-weight: 800;
+            font-size: 0.88rem;
+        }
+
+        .scoreboard {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            background: rgba(255, 255, 255, 0.12);
+            padding: 0.35rem 0.95rem;
+            border-radius: 14px;
+        }
+
+        .score-team-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 54px;
+        }
+
+        .score-side-tag {
+            font-size: 0.65rem;
+            font-weight: 800;
+            color: var(--sand);
+            text-transform: uppercase;
+        }
+
+        .score-num {
+            font-size: 1.45rem;
+            font-weight: 700;
+            line-height: 1.1;
+        }
+
+        .score-center {
+            text-align: center;
+            font-size: 0.8rem;
+            font-weight: 800;
+            min-width: 115px;
+        }
+
+        .half-badge {
+            display: block;
+            font-size: 0.68rem;
+            color: #FFE169;
+            margin-bottom: 1px;
+        }
+
+        .level-chip {
+            display: inline-block;
+            background: var(--red-accent);
+            color: #FFF;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.66rem;
+            padding: 0.12rem 0.5rem;
+            border-radius: 99px;
+            margin-top: 2px;
+        }
+
+        .hud-actions {
+            display: flex;
+            gap: 0.45rem;
+        }
+
+        .canvas-shell {
+            position: relative;
+            border: 3px solid var(--dark-choc);
+            border-radius: 22px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            background: #4E6D47;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: auto;
+            aspect-ratio: 16 / 9;
+        }
+
+        .goal-banner-wrap {
+            position: absolute;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            background: rgba(59, 41, 34, 0.42);
+            pointer-events: none;
+            z-index: 15;
+            text-align: center;
+            padding: 1rem;
+        }
+
+        .goal-banner-wrap.show {
+            display: flex;
+            animation: goalPop 0.42s cubic-bezier(0.22, 1.4, 0.36, 1);
+        }
+
+        .goal-banner-text {
+            font-size: clamp(2.4rem, 7vw, 4.4rem);
+            color: #FFFDF9;
+            background: linear-gradient(135deg, #D62828 0%, #9E1919 100%);
+            padding: 0.38rem 1.6rem;
+            border-radius: 26px;
+            border: 4px solid var(--cream);
+            text-shadow: 0 4px 0 #470B0B;
+            transform: rotate(-2deg);
+        }
+
+        .goal-banner-sub {
+            margin-top: 0.65rem;
+            background: var(--dark-choc);
+            color: var(--sand);
+            padding: 0.36rem 1.1rem;
+            border-radius: 99px;
+            font-size: 0.9rem;
+            font-weight: 800;
+        }
+
+        @keyframes goalPop {
+            0% { transform: scale(0.35) rotate(-10deg); opacity: 0; }
+            75% { transform: scale(1.08) rotate(-2deg); opacity: 1; }
+            100% { transform: scale(1) rotate(-2deg); opacity: 1; }
+        }
+
+        .guide-grid {
+            margin-top: 0.7rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 0.65rem;
+        }
+
+        .guide-card {
+            background: var(--card);
+            border: 1.5px solid var(--sand);
+            border-radius: 15px;
+            padding: 0.62rem 0.88rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--mocha);
+        }
+
+        .guide-card strong {
+            color: var(--dark-choc);
+        }
+
+        code {
+            background: var(--subtle);
+            padding: 0.1rem 0.38rem;
+            border-radius: 6px;
+            color: var(--dark-choc);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-wrapper">
+        <!-- LAYAR 1: PEMBUKA -->
+        <section id="screen-intro" class="screen active intro-screen">
+            <div class="intro-badge">⚽ 5v5 FUTSAL • 2 BABAK (1:30 + 1:30) • ADU PENALTI</div>
+            <h1 class="intro-title">GARUDA &amp; WORLD <span>5v5 FOOTBALL</span></h1>
+            <p class="intro-desc">
+                Pertandingan cepat <strong>5 vs 5</strong> dengan <strong>Babak 1 (01:30)</strong> dan <strong>Babak 2 (01:30) tukar gawang</strong>! Dilengkapi <strong>tendangan jarak jauh (Power Long Shot)</strong> serta <strong>Adu Penalti 1 vs Kiper</strong> (pemain lain di belakang, lawan mengendalikan kiper, target 5 gol) bila skor seri!
+            </p>
+            <div class="intro-features">
+                <div class="feat-chip">🇮🇩 Timnas Indonesia (5 Pemain Inti)</div>
+                <div class="feat-chip">🌍 Bintang Dunia (5 Pemain Inti)</div>
+                <div class="feat-chip">⏱️ 01:30 Babak 1 + 01:30 Babak 2 (Tukar Gawang)</div>
+                <div class="feat-chip">🚀 Power Long Shot &amp; Penalti 1v1 Kiper (5 Gol)</div>
+            </div>
+            <button type="button" class="btn btn-primary btn-lg" onclick="goToSetup()">
+                Mulai Atur Tim →
+            </button>
+        </section>
+
+        <!-- LAYAR 2: PERSIAPAN TIM -->
+        <section id="screen-setup" class="screen setup-screen">
+            <div class="screen-head">
+                <button type="button" class="btn btn-ghost" onclick="goToIntro()">← Pembuka</button>
+                <h2>Persiapan Pertandingan 5v5</h2>
+                <span class="pill-tag">2 × 01:30 • Tukar Gawang • Penalti</span>
+            </div>
+
+            <div class="setup-top-row">
+                <div class="field-box">
+                    <label for="gameMode">Mode Permainan</label>
+                    <select id="gameMode" onchange="updateSetupLabels()">
+                        <option value="2p" selected>👥 2 Orang (Pemain 1 vs Pemain 2)</option>
+                        <option value="ai">🤖 1 Orang vs AI (Kanan)</option>
+                    </select>
+                </div>
+                <div class="field-box">
+                    <label for="levelSelect">Tingkat Kesulitan (Level 1 – 17)</label>
+                    <select id="levelSelect" onchange="updateLevelSummary()"></select>
+                </div>
+            </div>
+
+            <div class="teams-grid">
+                <!-- TIM 1 -->
+                <div class="team-card">
+                    <div class="team-header">
+                        <span class="team-badge left-badge">TIM 1 • P1 (Kiri di Babak 1)</span>
+                        <span class="roster-count">5 Pemain Bernama</span>
+                    </div>
+
+                    <div class="field-box">
+                        <label for="squadLeft">Pilih Skuad Tim 1</label>
+                        <select id="squadLeft">
+                            <option value="indonesia" selected>🇮🇩 Timnas Indonesia (Paes, Idzes, Haye, Marselino, Struick)</option>
+                            <option value="world">🌍 Bintang Dunia (Alisson, Van Dijk, Bellingham, Yamal, Mbappé)</option>
+                        </select>
+                    </div>
+
+                    <div class="field-box">
+                        <label for="jerseyLeft">Pilihan Baju / Jersey Tim 1</label>
+                        <select id="jerseyLeft">
+                            <option value="red-white" selected>🔴 Merah - Putih (Garuda)</option>
+                            <option value="crimson-gold">🍒 Merah Marun - Emas</option>
+                            <option value="cream-brown">☕ Cream - Cokelat</option>
+                            <option value="royal-blue">🔵 Biru Klasik</option>
+                        </select>
+                    </div>
+
+                    <div class="field-box">
+                        <label for="formationLeft">Formasi 5v5 Tim 1</label>
+                        <select id="formationLeft">
+                            <option value="1-2-1" selected>1 - 2 - 1 (Diamond Seimbang)</option>
+                            <option value="2-2">2 - 2 (Kotak Solid)</option>
+                            <option value="3-1">3 - 1 (Bertahan &amp; Serangan Balik)</option>
+                            <option value="1-1-2">1 - 1 - 2 (Agresif Menyerang)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- TIM 2 -->
+                <div class="team-card">
+                    <div class="team-header">
+                        <span class="team-badge right-badge" id="rightTeamBadge">TIM 2 • P2 (Kanan di Babak 1)</span>
+                        <span class="roster-count">5 Pemain Bernama</span>
+                    </div>
+
+                    <div class="field-box">
+                        <label for="squadRight">Pilih Skuad Tim 2</label>
+                        <select id="squadRight">
+                            <option value="world" selected>🌍 Bintang Dunia (Alisson, Van Dijk, Bellingham, Yamal, Mbappé)</option>
+                            <option value="indonesia">🇮🇩 Timnas Indonesia (Paes, Idzes, Haye, Marselino, Struick)</option>
+                        </select>
+                    </div>
+
+                    <div class="field-box">
+                        <label for="jerseyRight">Pilihan Baju / Jersey Tim 2</label>
+                        <select id="jerseyRight">
+                            <option value="crimson-gold" selected>🍒 Merah Marun - Emas</option>
+                            <option value="red-white">🔴 Merah - Putih</option>
+                            <option value="cream-brown">☕ Cream - Cokelat</option>
+                            <option value="royal-blue">🔵 Biru Klasik</option>
+                        </select>
+                    </div>
+
+                    <div class="field-box">
+                        <label for="formationRight">Formasi 5v5 Tim 2</label>
+                        <select id="formationRight">
+                            <option value="2-2" selected>2 - 2 (Kotak Solid)</option>
+                            <option value="1-2-1">1 - 2 - 1 (Diamond Seimbang)</option>
+                            <option value="3-1">3 - 1 (Bertahan &amp; Serangan Balik)</option>
+                            <option value="1-1-2">1 - 1 - 2 (Agresif Menyerang)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="setup-footer">
+                <div class="level-summary" id="levelSummaryText">
+                    Level 1 (EASY): Babak 1 (01:30) + Babak 2 (01:30), tempo santai untuk pemanasan.
+                </div>
+                <button type="button" class="btn btn-primary btn-lg" onclick="startMatch()">
+                    Masuk ke Lapangan 5v5 ⚽
+                </button>
+            </div>
+        </section>
+
+        <!-- LAYAR 3: GAMEPLAY LAPANGAN -->
+        <section id="screen-game" class="screen game-screen">
+            <div class="hud-bar">
+                <div class="hud-left-group">
+                    <button type="button" class="btn btn-ghost btn-sm" onclick="goToSetup()">← Atur Tim</button>
+                    <div class="hud-title" id="hudMatchup">Indonesia vs World Stars</div>
+                </div>
+
+                <div class="scoreboard">
+                    <div class="score-team-box">
+                        <span class="score-side-tag" id="leftSideLabel">P1 (KIRI)</span>
+                        <span class="score-num" id="scoreLeftSide">0</span>
+                    </div>
+                    <div class="score-center">
+                        <span class="half-badge" id="halfLabel">BABAK 1</span>
+                        <div id="matchClock">01:30</div>
+                        <span class="level-chip" id="hudLevelBadge">LVL 1 • EASY</span>
+                    </div>
+                    <div class="score-team-box">
+                        <span class="score-side-tag" id="rightSideLabel">P2 (KANAN)</span>
+                        <span class="score-num" id="scoreRightSide">0</span>
+                    </div>
+                </div>
+
+                <div class="hud-actions">
+                    <button type="button" class="btn btn-red btn-sm" onclick="startMatch()">↻ Ulang</button>
+                    <button type="button" class="btn btn-dark btn-sm" onclick="advanceLevelManual()">Level +1</button>
+                </div>
+            </div>
+
+            <div class="canvas-shell">
+                <canvas id="pitchCanvas" width="960" height="540"></canvas>
+                <div class="goal-banner-wrap" id="goalBannerWrap">
+                    <div class="goal-banner-text" id="goalBannerMain">GOALLL!</div>
+                    <div class="goal-banner-sub" id="goalBannerSub">Gol tercipta!</div>
+                </div>
+            </div>
+
+            <div class="guide-grid">
+                <div class="guide-card" id="p1GuideCard">
+                    <strong>🎮 Pemain 1 (Tim 1):</strong> <code>W A S D</code> gerak • Tahan <code>Spasi</code> lalu lepas untuk <strong>Shooting Jauh</strong> (Penalti: gerakkan kiper saat bertahan)
+                </div>
+                <div class="guide-card" id="p2GuideCard">
+                    <strong>🕹️ Pemain 2 (Tim 2):</strong> <code>↑ ↓ ← →</code> gerak • Tahan <code>Enter</code>/<code>Shift</code> lalu lepas untuk <strong>Shooting Jauh</strong> (Penalti: gerakkan kiper saat bertahan)
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('pitchCanvas');
+        const ctx = canvas.getContext('2d');
+        const W = canvas.width;
+        const H = canvas.height;
+
+        const HALF_DURATION_SECONDS = 90; // 1 menit 30 detik (01:30) per babak
+
+        // Skuad 5 vs 5 (1 Kiper + 4 Pemain Lapangan)
+        const ROSTERS_5 = {
+            indonesia: [
+                { num: 1, name: 'Maarten Paes', role: 'GK' },
+                { num: 3, name: 'Jay Idzes', role: 'DF' },
+                { num: 19, name: 'Thom Haye', role: 'MF' },
+                { num: 7, name: 'Marselino', role: 'MF' },
+                { num: 9, name: 'Rafael Struick', role: 'FW' }
+            ],
+            world: [
+                { num: 1, name: 'Alisson', role: 'GK' },
+                { num: 4, name: 'Van Dijk', role: 'DF' },
+                { num: 5, name: 'Bellingham', role: 'MF' },
+                { num: 19, name: 'Lamine Yamal', role: 'FW' },
+                { num: 9, name: 'Mbappé', role: 'FW' }
+            ]
+        };
+
+        const JERSEY_THEMES = {
+            'red-white': { shirt: '#D62828', trim: '#FFFDF9', shorts: '#FFFDF9', skin: '#E5B28C', hair: '#2A1D17' },
+            'crimson-gold': { shirt: '#9E1919', trim: '#F4C430', shorts: '#3B2922', skin: '#DCA57E', hair: '#1E1612' },
+            'cream-brown': { shirt: '#F5EFE5', trim: '#3B2922', shorts: '#654638', skin: '#E7B692', hair: '#3B2922' },
+            'royal-blue': { shirt: '#254E70', trim: '#D8C3A5', shorts: '#FFFDF9', skin: '#DFAC86', hair: '#231914' }
+        };
+
+        // Koordinat 5 pemain (index 0 = Kiper, index 1..4 = pemain lapangan)
+        const FORMATIONS_5 = {
+            '1-2-1': [
+                { x: 0.06, y: 0.50 },
+                { x: 0.21, y: 0.50 },
+                { x: 0.33, y: 0.24 },
+                { x: 0.33, y: 0.76 },
+                { x: 0.45, y: 0.50 }
+            ],
+            '2-2': [
+                { x: 0.06, y: 0.50 },
+                { x: 0.22, y: 0.30 },
+                { x: 0.22, y: 0.70 },
+                { x: 0.41, y: 0.28 },
+                { x: 0.41, y: 0.72 }
+            ],
+            '3-1': [
+                { x: 0.06, y: 0.50 },
+                { x: 0.21, y: 0.22 },
+                { x: 0.19, y: 0.50 },
+                { x: 0.21, y: 0.78 },
+                { x: 0.44, y: 0.50 }
+            ],
+            '1-1-2': [
+                { x: 0.06, y: 0.50 },
+                { x: 0.20, y: 0.50 },
+                { x: 0.32, y: 0.50 },
+                { x: 0.44, y: 0.30 },
+                { x: 0.44, y: 0.70 }
+            ]
+        };
+
+        // Isi Level 1 - 17
+        const levelSelect = document.getElementById('levelSelect');
+        for (let lvl = 1; lvl <= 17; lvl++) {
+            let tier = 'EASY';
+            if (lvl >= 6 && lvl <= 11) tier = 'MEDIUM';
+            else if (lvl >= 12 && lvl <= 15) tier = 'HARD';
+            else if (lvl >= 16) tier = 'EXTREME';
+
+            const opt = document.createElement('option');
+            opt.value = lvl;
+            opt.textContent = `Level ${lvl} (${tier})`;
+            levelSelect.appendChild(opt);
+        }
+
+        let currentScreen = 'intro';
+        let currentLevel = 1;
+
+        // Skor selalu melekat pada Tim 1 (P1) dan Tim 2 (P2) meski bertukar sisi gawang di Babak 2
+        let scoreTeam1 = 0;
+        let scoreTeam2 = 0;
+
+        let currentHalf = 1; // 1 = Babak 1 (01:30), 2 = Babak 2 (01:30, tukar gawang)
+        let timeLeft = HALF_DURATION_SECONDS;
+        let matchFinished = false;
+        let goalLock = false;
+        let clockInterval = null;
+        let rafId = null;
+
+        // Power Charge untuk Shooting Jauh
+        let p1Charge = 0;
+        let p2Charge = 0;
+        let p1ReleasePower = 0;
+        let p2ReleasePower = 0;
+
+        // Status Adu Penalti (1 Penendang vs Kiper Jarak Jauh, pemain lain di belakang, hingga 5 gol)
+        let penaltyMode = false;
+        let penRound = 1;
+        let penTurnTeam = 1; // 1 = Tim 1 menendang (Tim 2 jaga gawang), 2 = Tim 2 menendang (Tim 1 jaga gawang)
+        let penScore1 = 0;
+        let penScore2 = 0;
+        let penWaitingShot = false;
+        let penCharge = 0;
+        let penAiTimer = 0;
+        let penShotElapsed = 0;
+
+        const keys = {};
+        const particles = [];
+
+        const goalTop = H * 0.33;
+        const goalBottom = H * 0.67;
+        const goalHeight = goalBottom - goalTop;
+
+        const ball = {
+            x: W / 2,
+            y: H / 2,
+            vx: 0,
+            vy: 0,
+            r: 9.5,
+            spin: 0,
+            trail: []
+        };
+
+        let team1Players = [];
+        let team2Players = [];
+        let activeTeam1Idx = 4;
+        let activeTeam2Idx = 4;
+
+        // Mengembalikan sisi lapangan ('left' atau 'right') yang ditempati masing-masing tim pada babak aktif
+        function getTeamSide(teamNum) {
+            if (currentHalf === 1) {
+                return teamNum === 1 ? 'left' : 'right';
+            } else {
+                // Babak 2 tukar gawang!
+                return teamNum === 1 ? 'right' : 'left';
+            }
+        }
+
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            currentScreen = id.replace('screen-', '');
+        }
+
+        function goToIntro() {
+            stopLoops();
+            showScreen('screen-intro');
+        }
+
+        function goToSetup() {
+            stopLoops();
+            updateSetupLabels();
+            updateLevelSummary();
+            showScreen('screen-setup');
+        }
+
+        function updateSetupLabels() {
+            const mode = document.getElementById('gameMode').value;
+            document.getElementById('rightTeamBadge').textContent = mode === 'ai'
+                ? 'TIM 2 • AI (Kanan di Babak 1)'
+                : 'TIM 2 • P2 (Kanan di Babak 1)';
+
+            const guide2 = document.getElementById('p2GuideCard');
+            if (mode === 'ai') {
+                guide2.innerHTML = '<strong>🤖 AI (Tim 2):</strong> Otomatis menyerang, shooting jauh, &amp; menggerakkan kiper saat adu penalti!';
+            } else {
+                guide2.innerHTML = '<strong>🕹️ Pemain 2 (Tim 2):</strong> <code>↑ ↓ ← →</code> gerak &amp; arah kiper • Tahan <code>Enter</code>/<code>Shift</code> untuk <strong>Shooting Jauh</strong>';
+            }
+        }
+
+        function getLevelConfig(lvl) {
+            const ratio = (lvl - 1) / 16;
+            let tier = 'EASY';
+            let note = 'Babak 1 (01:30) + Babak 2 (01:30) tukar gawang, tempo santai.';
+            if (lvl >= 6 && lvl <= 11) {
+                tier = 'MEDIUM';
+                note = 'Babak 1 (01:30) + Babak 2 (01:30) tukar gawang, tekanan sedang & shooting tajam.';
+            } else if (lvl >= 12 && lvl <= 15) {
+                tier = 'HARD';
+                note = 'Babak 1 (01:30) + Babak 2 (01:30), kecepatan tinggi & kiper AI sangat sigap.';
+            } else if (lvl >= 16) {
+                tier = 'EXTREME';
+                note = 'Babak 1 (01:30) + Babak 2 (01:30), duel super cepat & penalti menegangkan!';
+            }
+
+            return {
+                tier,
+                note,
+                playerSpeed: 3.6 + ratio * 1.4,
+                ballMaxSpeed: 15.5 + ratio * 4.5, // Mendukung tendangan jarak jauh cepat
+                aiSpeed: 2.3 + ratio * 2.9,
+                gkReaction: 0.08 + ratio * 0.09,
+                friction: 0.988 + ratio * 0.003
+            };
+        }
+
+        function updateLevelSummary() {
+            currentLevel = Number(levelSelect.value) || 1;
+            const cfg = getLevelConfig(currentLevel);
+            document.getElementById('levelSummaryText').textContent = `Level ${currentLevel} (${cfg.tier}): ${cfg.note}`;
+        }
+
+        function buildFiveSquad(side, rosterKey, formationKey) {
+            const roster = ROSTERS_5[rosterKey] || ROSTERS_5.indonesia;
+            const coords = FORMATIONS_5[formationKey] || FORMATIONS_5['1-2-1'];
+
+            return roster.map((member, idx) => {
+                const pt = coords[idx] || { x: 0.25, y: 0.5 };
+                const hx = (side === 'left' ? pt.x : 1 - pt.x) * W;
+                const hy = pt.y * H;
+                return {
+                    num: member.num,
+                    name: member.name,
+                    role: member.role,
+                    x: hx,
+                    y: hy,
+                    homeX: hx,
+                    homeY: hy,
+                    vx: 0,
+                    vy: 0,
+                    angle: side === 'left' ? 0 : Math.PI,
+                    stride: idx * 1.3,
+                    kickTimer: 0
+                };
+            });
+        }
+
+        function resetFieldPositions() {
+            const sq1 = document.getElementById('squadLeft').value;
+            const sq2 = document.getElementById('squadRight').value;
+            const fm1 = document.getElementById('formationLeft').value;
+            const fm2 = document.getElementById('formationRight').value;
+
+            const side1 = getTeamSide(1);
+            const side2 = getTeamSide(2);
+
+            team1Players = buildFiveSquad(side1, sq1, fm1);
+            team2Players = buildFiveSquad(side2, sq2, fm2);
+            activeTeam1Idx = 4;
+            activeTeam2Idx = 4;
+
+            p1Charge = 0;
+            p2Charge = 0;
+            p1ReleasePower = 0;
+            p2ReleasePower = 0;
+
+            ball.x = W / 2;
+            ball.y = H / 2;
+            ball.vx = 0;
+            ball.vy = 0;
+            ball.trail = [];
+            goalLock = false;
+        }
+
+        function startMatch() {
+            currentLevel = Number(levelSelect.value) || 1;
+            scoreTeam1 = 0;
+            scoreTeam2 = 0;
+            currentHalf = 1;
+            timeLeft = HALF_DURATION_SECONDS;
+            matchFinished = false;
+            goalLock = false;
+
+            penaltyMode = false;
+            penRound = 1;
+            penTurnTeam = 1;
+            penScore1 = 0;
+            penScore2 = 0;
+            penWaitingShot = false;
+            penCharge = 0;
+            penAiTimer = 0;
+
+            const sq1Name = document.getElementById('squadLeft').value === 'indonesia' ? 'Indonesia' : 'World Stars';
+            const sq2Name = document.getElementById('squadRight').value === 'indonesia' ? 'Indonesia' : 'World Stars';
+            const cfg = getLevelConfig(currentLevel);
+
+            document.getElementById('hudMatchup').textContent = `${sq1Name} (P1) vs ${sq2Name} (P2)`;
+            document.getElementById('hudLevelBadge').textContent = `LVL ${currentLevel} • ${cfg.tier}`;
+            document.getElementById('goalBannerWrap').classList.remove('show');
+
+            updateHUD();
+            updateSetupLabels();
+            resetFieldPositions();
+            showScreen('screen-game');
+
+            stopLoops();
+            clockInterval = setInterval(() => {
+                if (!matchFinished && !goalLock && !penaltyMode) {
+                    timeLeft--;
+                    if (timeLeft <= 0) {
+                        timeLeft = 0;
+                        updateHUD();
+                        onHalfTimeOrFullTime();
+                        return;
+                    }
+                    updateHUD();
+                }
+            }, 1000);
+
+            rafId = requestAnimationFrame(loop);
+        }
+
+        function advanceLevelManual() {
+            currentLevel = currentLevel < 17 ? currentLevel + 1 : 1;
+            levelSelect.value = currentLevel;
+            startMatch();
+        }
+
+        function stopLoops() {
+            if (rafId) {
+                cancelAnimationFrame(rafId);
+                rafId = null;
+            }
+            if (clockInterval) {
+                clearInterval(clockInterval);
+                clockInterval = null;
+            }
+        }
+
+        function updateHUD() {
+            const side1 = getTeamSide(1);
+            // Papan skor menampilkan posisi kiri & kanan sesuai sisi gawang pada babak berjalan
+            if (side1 === 'left') {
+                document.getElementById('leftSideLabel').textContent = penaltyMode ? 'P1 • KIRI' : 'P1 (KIRI)';
+                document.getElementById('rightSideLabel').textContent = penaltyMode ? 'P2 • KANAN' : 'P2 (KANAN)';
+                document.getElementById('scoreLeftSide').textContent = penaltyMode ? penScore1 : scoreTeam1;
+                document.getElementById('scoreRightSide').textContent = penaltyMode ? penScore2 : scoreTeam2;
+            } else {
+                // Babak 2 setelah tukar gawang: Tim 2 di kiri, Tim 1 di kanan
+                document.getElementById('leftSideLabel').textContent = penaltyMode ? 'P2 • KIRI' : 'P2 (KIRI)';
+                document.getElementById('rightSideLabel').textContent = penaltyMode ? 'P1 • KANAN' : 'P1 (KANAN)';
+                document.getElementById('scoreLeftSide').textContent = penaltyMode ? penScore2 : scoreTeam2;
+                document.getElementById('scoreRightSide').textContent = penaltyMode ? penScore1 : scoreTeam1;
+            }
+
+            if (penaltyMode) {
+                document.getElementById('halfLabel').textContent = `ADU PENALTI (TARGET 5 GOL)`;
+                document.getElementById('matchClock').textContent = `RONDE #${penRound}`;
+            } else {
+                document.getElementById('halfLabel').textContent = currentHalf === 1 ? 'BABAK 1 (01:30)' : 'BABAK 2 • TUKAR GAWANG';
+                const m = String(Math.floor(timeLeft / 60)).padStart(2, '0');
+                const s = String(timeLeft % 60).padStart(2, '0');
+                document.getElementById('matchClock').textContent = `${m}:${s}`;
+            }
+        }
+
+        function onHalfTimeOrFullTime() {
+            if (currentHalf === 1) {
+                // Selesai Babak 1 -> Lanjut Babak 2 Tukar Gawang
+                goalLock = true;
+                showBanner('BABAK 2!', 'Tukar sisi gawang! Tim 1 ke Kanan, Tim 2 ke Kiri (01:30)', 2100, () => {
+                    currentHalf = 2;
+                    timeLeft = HALF_DURATION_SECONDS;
+                    updateHUD();
+                    resetFieldPositions();
+                });
+            } else {
+                // Selesai Babak 2 -> Cek pemenang atau masuk Adu Penalti
+                if (scoreTeam1 > scoreTeam2) {
+                    finishMatchWithWinner(1, `Menang waktu normal ${scoreTeam1}-${scoreTeam2}!`);
+                } else if (scoreTeam2 > scoreTeam1) {
+                    finishMatchWithWinner(2, `Menang waktu normal ${scoreTeam2}-${scoreTeam1}!`);
+                } else {
+                    startPenaltyShootout();
+                }
+            }
+        }
+
+        function startPenaltyShootout() {
+            penaltyMode = true;
+            penRound = 1;
+            penTurnTeam = 1;
+            penScore1 = 0;
+            penScore2 = 0;
+            updateHUD();
+            showBanner(
+                'ADU PENALTI!',
+                `Skor seri ${scoreTeam1}-${scoreTeam2}! 1 vs Kiper jarak jauh (Target 5 Gol)`,
+                2100,
+                () => {
+                    setupPenaltyTurn();
+                }
+            );
+        }
+
+        function setupPenaltyTurn() {
+            if (matchFinished) return;
+            goalLock = false;
+            penWaitingShot = true;
+            penCharge = 0;
+            penAiTimer = 0;
+            penShotElapsed = 0;
+            ball.trail = [];
+
+            // Reset ke posisi standar babak 1 (Tim 1 di kiri menyerang ke kanan, Tim 2 di kanan menyerang ke kiri)
+            currentHalf = 1;
+            resetFieldPositions();
+            updateHUD();
+
+            // Pilih penendang bergantian dari pemain lapangan (index 1..4)
+            const kickerIdx = 4 - ((penRound - 1) % 4);
+
+            if (penTurnTeam === 1) {
+                // Tim 1 (Kiri) menendang jarak jauh ke gawang Kanan; Tim 2 mengendalikan Kiper Kanan!
+                const kicker = team1Players[kickerIdx];
+                const gk = team2Players[0];
+
+                // Penendang berdiri jauh di dekat lingkaran tengah (jarak jauh dari gawang kanan)
+                kicker.x = W * 0.56;
+                kicker.y = H / 2;
+                kicker.angle = 0;
+
+                ball.x = W * 0.59;
+                ball.y = H / 2;
+                ball.vx = 0;
+                ball.vy = 0;
+
+                // Kiper lawan berada di garis gawang kanan dan bisa digerakkan Tim 2
+                gk.x = W - 32;
+                gk.y = H / 2;
+                gk.angle = Math.PI;
+
+                // 4 pemain lainnya berbaris di belakang penendang (sisi kiri tengah lapangan)
+                let backSlot = 0;
+                team1Players.forEach((p, idx) => {
+                    if (idx !== kickerIdx) {
+                        p.x = W * 0.34;
+                        p.y = H * (0.24 + backSlot * 0.17);
+                        p.angle = 0;
+                        backSlot++;
+                    }
+                });
+                let oppSlot = 0;
+                team2Players.forEach((p, idx) => {
+                    if (idx !== 0) {
+                        p.x = W * 0.24;
+                        p.y = H * (0.24 + oppSlot * 0.17);
+                        p.angle = 0;
+                        oppSlot++;
+                    }
+                });
+
+                activeTeam1Idx = kickerIdx;
+                activeTeam2Idx = 0; // Tim 2 mengendalikan kipernya!
+            } else {
+                // Tim 2 (Kanan) menendang jarak jauh ke gawang Kiri; Tim 1 mengendalikan Kiper Kiri!
+                const kicker = team2Players[kickerIdx];
+                const gk = team1Players[0];
+
+                // Penendang berdiri jauh di dekat lingkaran tengah menghadap gawang kiri
+                kicker.x = W * 0.44;
+                kicker.y = H / 2;
+                kicker.angle = Math.PI;
+
+                ball.x = W * 0.41;
+                ball.y = H / 2;
+                ball.vx = 0;
+                ball.vy = 0;
+
+                // Kiper Tim 1 berada di garis gawang kiri dan dikendalikan Tim 1
+                gk.x = 32;
+                gk.y = H / 2;
+                gk.angle = 0;
+
+                // 4 pemain lainnya berbaris di belakang penendang (sisi kanan tengah lapangan)
+                let backSlot = 0;
+                team2Players.forEach((p, idx) => {
+                    if (idx !== kickerIdx) {
+                        p.x = W * 0.66;
+                        p.y = H * (0.24 + backSlot * 0.17);
+                        p.angle = Math.PI;
+                        backSlot++;
+                    }
+                });
+                let oppSlot = 0;
+                team1Players.forEach((p, idx) => {
+                    if (idx !== 0) {
+                        p.x = W * 0.76;
+                        p.y = H * (0.24 + oppSlot * 0.17);
+                        p.angle = Math.PI;
+                        oppSlot++;
+                    }
+                });
+
+                activeTeam2Idx = kickerIdx;
+                activeTeam1Idx = 0; // Tim 1 mengendalikan kipernya!
+            }
+        }
+
+        function checkPenaltyWinner() {
+            // Menang jika salah satu mencapai 5 gol setelah putaran seimbang
+            if (penTurnTeam === 1) {
+                if ((penScore1 >= 5 || penScore2 >= 5) && penScore1 !== penScore2) {
+                    const winTeam = penScore1 > penScore2 ? 1 : 2;
+                    finishMatchWithWinner(winTeam, `Menang adu penalti ${penScore1}-${penScore2}!`);
+                    return true;
+                }
+                // Eliminasi matematis sebelum 5 tendangan jika selisih tak terkejar dalam 5 ronde awal
+                if (penRound <= 5) {
+                    const rem = 5 - (penRound - 1);
+                    if (penScore1 > penScore2 + rem) {
+                        finishMatchWithWinner(1, `Menang adu penalti ${penScore1}-${penScore2}!`);
+                        return true;
+                    }
+                    if (penScore2 > penScore1 + rem) {
+                        finishMatchWithWinner(2, `Menang adu penalti ${penScore2}-${penScore1}!`);
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        function finishMatchWithWinner(winnerTeam, reasonText) {
+            matchFinished = true;
+            goalLock = true;
+            const teamName = winnerTeam === 1 ? 'Tim 1 (P1)' : 'Tim 2 (P2)';
+            const nextLvl = currentLevel < 17 ? currentLevel + 1 : 1;
+
+            showBanner(
+                `${teamName.toUpperCase()} MENANG!`,
+                `${reasonText} — Otomatis lanjut ke Level ${nextLvl}...`,
+                2500,
+                () => {
+                    currentLevel = nextLvl;
+                    levelSelect.value = currentLevel;
+                    startMatch();
+                }
+            );
+        }
+
+        function showBanner(mainTitle, subTitle, durationMs, callback) {
+            const wrap = document.getElementById('goalBannerWrap');
+            document.getElementById('goalBannerMain').textContent = mainTitle;
+            document.getElementById('goalBannerSub').textContent = subTitle;
+            wrap.classList.add('show');
+
+            setTimeout(() => {
+                wrap.classList.remove('show');
+                if (typeof callback === 'function') callback();
+            }, durationMs);
+        }
+
+        function playGoalSound() {
+            try {
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                const ac = new AudioCtx();
+                [523.25, 659.25, 783.99, 1046.5].forEach((freq, i) => {
+                    const osc = ac.createOscillator();
+                    const gain = ac.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, ac.currentTime + i * 0.1);
+                    gain.gain.setValueAtTime(0.16, ac.currentTime + i * 0.1);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + i * 0.1 + 0.34);
+                    osc.connect(gain);
+                    gain.connect(ac.destination);
+                    osc.start(ac.currentTime + i * 0.1);
+                    osc.stop(ac.currentTime + i * 0.1 + 0.36);
+                });
+            } catch (e) {}
+        }
+
+        function spawnParticles(x, y) {
+            const colors = ['#D62828', '#FFFDF9', '#F4C430', '#A98265'];
+            for (let i = 0; i < 32; i++) {
+                const ang = (Math.PI * 2 * i) / 32;
+                const spd = 2.2 + Math.random() * 5.8;
+                particles.push({
+                    x, y,
+                    vx: Math.cos(ang) * spd,
+                    vy: Math.sin(ang) * spd,
+                    life: 44 + Math.floor(Math.random() * 16),
+                    color: colors[i % colors.length]
+                });
+            }
+        }
+
+        // scoringTeam = 1 (Tim 1 cetak gol), 2 (Tim 2 cetak gol), atau 0 (gagal/diblok saat penalti)
+        function handleGoalScored(scoringTeam) {
+            if (goalLock || matchFinished) return;
+            goalLock = true;
+
+            if (!penaltyMode) {
+                playGoalSound();
+                spawnParticles(ball.x, ball.y);
+
+                if (scoringTeam === 1) scoreTeam1++;
+                else if (scoringTeam === 2) scoreTeam2++;
+                updateHUD();
+
+                const scorerName = scoringTeam === 1
+                    ? team1Players[activeTeam1Idx]?.name || 'Tim 1'
+                    : team2Players[activeTeam2Idx]?.name || 'Tim 2';
+
+                showBanner('GOALLL!', `Gol oleh ${scorerName}!`, 1600, () => {
+                    resetFieldPositions();
+                });
+            } else {
+                const isGoal = scoringTeam === penTurnTeam;
+                const kickerName = penTurnTeam === 1
+                    ? team1Players[activeTeam1Idx]?.name
+                    : team2Players[activeTeam2Idx]?.name;
+
+                if (isGoal) {
+                    playGoalSound();
+                    spawnParticles(ball.x, ball.y);
+                    if (penTurnTeam === 1) penScore1++;
+                    else penScore2++;
+                }
+                updateHUD();
+
+                showBanner(
+                    isGoal ? 'GOALLL PENALTI!' : 'DITEPIS / MELESET!',
+                    isGoal
+                        ? `Masuk! Skor Penalti: P1 (${penScore1}) - (${penScore2}) P2`
+                        : `Gagal mencetak gol! (${kickerName})`,
+                    1550,
+                    () => {
+                        if (penTurnTeam === 1) {
+                            penTurnTeam = 2;
+                        } else {
+                            penTurnTeam = 1;
+                            if (!checkPenaltyWinner()) {
+                                penRound++;
+                            }
+                        }
+                        if (!matchFinished) {
+                            setupPenaltyTurn();
+                        }
+                    }
+                );
+            }
+        }
+
+        function pickClosestOutfield(squad) {
+            let best = 1;
+            let minD = Infinity;
+            for (let i = 1; i < squad.length; i++) {
+                const d = Math.hypot(squad[i].x - ball.x, squad[i].y - ball.y);
+                if (d < minD) {
+                    minD = d;
+                    best = i;
+                }
+            }
+            return best;
+        }
+
+        function updatePenaltyModePhysics() {
+            const cfg = getLevelConfig(currentLevel);
+            const mode = document.getElementById('gameMode').value;
+
+            const gk1 = team1Players[0]; // Kiper Tim 1 (Gawang Kiri)
+            const gk2 = team2Players[0]; // Kiper Tim 2 (Gawang Kanan)
+
+            // KONTROL KIPER OLEH TIM BERTAHAN!
+            if (penTurnTeam === 1) {
+                // Tim 1 (Kiri) menendang -> Tim 2 mengendalikan Kiper Kanan!
+                if (mode === '2p') {
+                    let gkVy = 0;
+                    if (keys['ArrowUp']) gkVy -= 5.4;
+                    if (keys['ArrowDown']) gkVy += 5.4;
+                    // Lompatan kiper menepis bola (Enter/Shift)
+                    if (keys['Enter'] || keys['ShiftRight'] || keys['ShiftLeft']) {
+                        gk2.kickTimer = 10;
+                        gkVy *= 1.35;
+                    }
+                    gk2.y = Math.max(goalTop + 12, Math.min(goalBottom - 12, gk2.y + gkVy));
+                } else {
+                    // AI mengendalikan Kiper Kanan
+                    const targetY = Math.max(goalTop + 12, Math.min(goalBottom - 12, ball.y));
+                    gk2.y += (targetY - gk2.y) * cfg.gkReaction;
+                }
+            } else {
+                // Tim 2 (Kanan) menendang -> Tim 1 (P1) selalu mengendalikan Kiper Kiri!
+                let gkVy = 0;
+                if (keys['KeyW']) gkVy -= 5.4;
+                if (keys['KeyS']) gkVy += 5.4;
+                if (keys['Space']) {
+                    gk1.kickTimer = 10;
+                    gkVy *= 1.35;
+                }
+                gk1.y = Math.max(goalTop + 12, Math.min(goalBottom - 12, gk1.y + gkVy));
+            }
+
+            // LOGIKA PENENDANG JARAK JAUH
+            if (penWaitingShot) {
+                const kicker = penTurnTeam === 1 ? team1Players[activeTeam1Idx] : team2Players[activeTeam2Idx];
+                const isHumanKicker = (penTurnTeam === 1) || (penTurnTeam === 2 && mode === '2p');
+
+                if (isHumanKicker) {
+                    let aimY = 0;
+                    if (penTurnTeam === 1) {
+                        if (keys['KeyW']) aimY -= 1;
+                        if (keys['KeyS']) aimY += 1;
+                        kicker.angle = aimY * 0.34;
+
+                        if (keys['Space']) {
+                            penCharge = Math.min(1, penCharge + 0.032);
+                        } else if (penCharge > 0) {
+                            // Lepas tombol Spasi untuk menendang jarak jauh!
+                            penWaitingShot = false;
+                            kicker.kickTimer = 12;
+                            const shotSpd = 12.5 + penCharge * 7.5;
+                            ball.vx = shotSpd;
+                            ball.vy = aimY * (shotSpd * 0.36);
+                            penCharge = 0;
+                        }
+                    } else {
+                        if (keys['ArrowUp']) aimY -= 1;
+                        if (keys['ArrowDown']) aimY += 1;
+                        kicker.angle = Math.PI - aimY * 0.34;
+
+                        const p2ShootHeld = keys['Enter'] || keys['ShiftRight'] || keys['ShiftLeft'];
+                        if (p2ShootHeld) {
+                            penCharge = Math.min(1, penCharge + 0.032);
+                        } else if (penCharge > 0) {
+                            penWaitingShot = false;
+                            kicker.kickTimer = 12;
+                            const shotSpd = 12.5 + penCharge * 7.5;
+                            ball.vx = -shotSpd;
+                            ball.vy = aimY * (shotSpd * 0.36);
+                            penCharge = 0;
+                        }
+                    }
+                } else {
+                    // Eksekusi penalti jarak jauh oleh AI (Tim 2)
+                    penAiTimer++;
+                    penCharge = Math.min(1, penAiTimer / 50);
+                    if (penAiTimer > 52) {
+                        penWaitingShot = false;
+                        kicker.kickTimer = 12;
+                        const aim = (Math.random() - 0.5) * 1.9;
+                        kicker.angle = Math.PI - aim * 0.34;
+                        const shotSpd = 13.5 + ((currentLevel - 1) / 16) * 5.5;
+                        ball.vx = -shotSpd;
+                        ball.vy = aim * (shotSpd * 0.34);
+                        penCharge = 0;
+                    }
+                }
+            } else {
+                penShotElapsed++;
+            }
+
+            ball.x += ball.vx;
+            ball.y += ball.vy;
+            ball.spin += Math.hypot(ball.vx, ball.vy) * 0.04;
+            updateBallTrail();
+
+            // Cek tepisan kiper aktif
+            const activeGk = penTurnTeam === 1 ? gk2 : gk1;
+            const distGk = Math.hypot(ball.x - activeGk.x, ball.y - (activeGk.y + 4));
+            if (distGk < ball.r + 18 && !goalLock) {
+                ball.vx = -ball.vx * 0.65;
+                ball.vy = (Math.random() - 0.5) * 7;
+                handleGoalScored(0); // Ditepis kiper!
+                return;
+            }
+
+            // Cek gol atau bola meleset keluar
+            const inGoalY = ball.y > goalTop && ball.y < goalBottom;
+            if (penTurnTeam === 1 && ball.x + ball.r > W - 16) {
+                if (inGoalY) handleGoalScored(1);
+                else handleGoalScored(0);
+            } else if (penTurnTeam === 2 && ball.x - ball.r < 16) {
+                if (inGoalY) handleGoalScored(2);
+                else handleGoalScored(0);
+            } else if (ball.y < 14 || ball.y > H - 14 || penShotElapsed > 160) {
+                handleGoalScored(0);
+            }
+        }
+
+        function updateBallTrail() {
+            const spd = Math.hypot(ball.vx, ball.vy);
+            if (spd > 11.5) {
+                ball.trail.push({ x: ball.x, y: ball.y, alpha: 0.55 });
+                if (ball.trail.length > 10) ball.trail.shift();
+            } else if (ball.trail.length > 0) {
+                ball.trail.shift();
+            }
+        }
+
+        function updateNormalPhysics() {
+            const cfg = getLevelConfig(currentLevel);
+            const mode = document.getElementById('gameMode').value;
+
+            activeTeam1Idx = pickClosestOutfield(team1Players);
+            activeTeam2Idx = pickClosestOutfield(team2Players);
+
+            const side1 = getTeamSide(1);
+            const side2 = getTeamSide(2);
+
+            // Charge Power Shot untuk P1 (Spasi) & P2 (Enter/Shift)
+            if (keys['Space']) {
+                p1Charge = Math.min(1, p1Charge + 0.035);
+            } else if (p1Charge > 0) {
+                p1ReleasePower = 12.5 + p1Charge * 7.5; // Tendangan jarak jauh kuat saat tombol dilepas!
+                p1Charge = 0;
+            }
+
+            const p2KeyHeld = mode === '2p' && (keys['Enter'] || keys['ShiftRight'] || keys['ShiftLeft']);
+            if (p2KeyHeld) {
+                p2Charge = Math.min(1, p2Charge + 0.035);
+            } else if (p2Charge > 0) {
+                p2ReleasePower = 12.5 + p2Charge * 7.5;
+                p2Charge = 0;
+            }
+
+            // Kontrol Pemain 1 (Tim 1 - WASD)
+            const p1 = team1Players[activeTeam1Idx];
+            if (p1 && !goalLock) {
+                let mx = 0, my = 0;
+                if (keys['KeyA']) mx -= 1;
+                if (keys['KeyD']) mx += 1;
+                if (keys['KeyW']) my -= 1;
+                if (keys['KeyS']) my += 1;
+                const mag = Math.hypot(mx, my);
+                if (mag > 0) {
+                    const sprint = keys['Space'] ? 1.28 : 1.0;
+                    p1.vx = (mx / mag) * cfg.playerSpeed * sprint;
+                    p1.vy = (my / mag) * cfg.playerSpeed * sprint;
+                    p1.angle = Math.atan2(my, mx);
+                } else {
+                    p1.vx = 0;
+                    p1.vy = 0;
+                    // Menghadap ke arah gawang lawan secara default saat diam
+                    const targetGoalX = side1 === 'left' ? W - 20 : 20;
+                    p1.angle = Math.atan2(H / 2 - p1.y, targetGoalX - p1.x);
+                }
+
+                // Eksekusi shooting jauh jika bola berada di jangkauan pemain saat tombol dilepas
+                if (p1ReleasePower > 0) {
+                    const distBall = Math.hypot(ball.x - p1.x, ball.y - (p1.y + 6));
+                    if (distBall < ball.r + 28) {
+                        const shootAngle = mag > 0 ? Math.atan2(my, mx) : p1.angle;
+                        ball.vx = Math.cos(shootAngle) * p1ReleasePower;
+                        ball.vy = Math.sin(shootAngle) * p1ReleasePower;
+                        p1.kickTimer = 12;
+                    }
+                    p1ReleasePower = 0;
+                }
+            }
+
+            // Kontrol Pemain 2 atau AI (Tim 2)
+            const p2 = team2Players[activeTeam2Idx];
+            if (p2 && !goalLock) {
+                if (mode === '2p') {
+                    let mx = 0, my = 0;
+                    if (keys['ArrowLeft']) mx -= 1;
+                    if (keys['ArrowRight']) mx += 1;
+                    if (keys['ArrowUp']) my -= 1;
+                    if (keys['ArrowDown']) my += 1;
+                    const mag = Math.hypot(mx, my);
+                    if (mag > 0) {
+                        const sprint = p2KeyHeld ? 1.28 : 1.0;
+                        p2.vx = (mx / mag) * cfg.playerSpeed * sprint;
+                        p2.vy = (my / mag) * cfg.playerSpeed * sprint;
+                        p2.angle = Math.atan2(my, mx);
+                    } else {
+                        p2.vx = 0;
+                        p2.vy = 0;
+                        const targetGoalX = side2 === 'left' ? W - 20 : 20;
+                        p2.angle = Math.atan2(H / 2 - p2.y, targetGoalX - p2.x);
+                    }
+
+                    if (p2ReleasePower > 0) {
+                        const distBall = Math.hypot(ball.x - p2.x, ball.y - (p2.y + 6));
+                        if (distBall < ball.r + 28) {
+                            const shootAngle = mag > 0 ? Math.atan2(my, mx) : p2.angle;
+                            ball.vx = Math.cos(shootAngle) * p2ReleasePower;
+                            ball.vy = Math.sin(shootAngle) * p2ReleasePower;
+                            p2.kickTimer = 12;
+                        }
+                        p2ReleasePower = 0;
+                    }
+                } else {
+                    const dx = ball.x - p2.x;
+                    const dy = ball.y - p2.y;
+                    const d = Math.hypot(dx, dy) || 1;
+                    p2.vx = (dx / d) * cfg.aiSpeed;
+                    p2.vy = (dy / d) * cfg.aiSpeed;
+                    p2.angle = Math.atan2(dy, dx);
+                }
+            }
+
+            // Gerakan 5 pemain tiap tim (kiper menjaga area gawang, rekan 5v5 bergerak dinamis)
+            [
+                { squad: team1Players, activeIdx: activeTeam1Idx, side: side1 },
+                { squad: team2Players, activeIdx: activeTeam2Idx, side: side2 }
+            ].forEach(group => {
+                group.squad.forEach((p, idx) => {
+                    if (idx === 0) {
+                        const targetY = Math.max(goalTop + 12, Math.min(goalBottom - 12, ball.y));
+                        p.vy = (targetY - p.y) * 0.09;
+                        p.vx = (p.homeX - p.x) * 0.09;
+                        p.angle = group.side === 'left' ? 0 : Math.PI;
+                    } else if (idx !== group.activeIdx) {
+                        const followX = p.homeX + (ball.x - W / 2) * 0.34;
+                        const followY = p.homeY + (ball.y - H / 2) * 0.30;
+                        p.vx = (followX - p.x) * 0.028;
+                        p.vy = (followY - p.y) * 0.028;
+                        if (Math.hypot(p.vx, p.vy) > 0.15) {
+                            p.angle = Math.atan2(p.vy, p.vx);
+                        }
+                    }
+
+                    p.x = Math.max(24, Math.min(W - 24, p.x + p.vx));
+                    p.y = Math.max(26, Math.min(H - 22, p.y + p.vy));
+
+                    const spd = Math.hypot(p.vx, p.vy);
+                    if (spd > 0.25) p.stride += spd * 0.14;
+                    if (p.kickTimer > 0) p.kickTimer--;
+                });
+            });
+
+            // Sentuhan & dribel/tendangan bola oleh 10 pemain di lapangan
+            team1Players.forEach(p => {
+                const dx = ball.x - p.x;
+                const dy = ball.y - (p.y + 8);
+                const dist = Math.hypot(dx, dy);
+                if (dist < ball.r + 15 && dist > 0) {
+                    const nx = dx / dist;
+                    const ny = dy / dist;
+                    // Jika AI atau sentuhan biasa: tendang sedang; jika punya power shoot tinggi: melesat jauh
+                    const pwr = p.role === 'GK' ? 13.5 : 9.2;
+                    ball.vx = nx * pwr + p.vx * 0.55;
+                    ball.vy = ny * pwr + p.vy * 0.55;
+                    ball.x = p.x + nx * (ball.r + 16);
+                    ball.y = (p.y + 8) + ny * (ball.r + 16);
+                    p.kickTimer = 10;
+                }
+            });
+
+            team2Players.forEach(p => {
+                const dx = ball.x - p.x;
+                const dy = ball.y - (p.y + 8);
+                const dist = Math.hypot(dx, dy);
+                if (dist < ball.r + 15 && dist > 0) {
+                    const nx = dx / dist;
+                    const ny = dy / dist;
+                    // AI memiliki peluang melepaskan shooting jarak jauh ke gawang lawan
+                    let pwr = p.role === 'GK' ? 13.5 : 9.2;
+                    if (mode === 'ai' && p.role !== 'GK' && Math.random() < 0.28) {
+                        const oppGoalX = side2 === 'left' ? W - 20 : 20;
+                        const angToGoal = Math.atan2((H / 2 + (Math.random() - 0.5) * 90) - ball.y, oppGoalX - ball.x);
+                        ball.vx = Math.cos(angToGoal) * 14.8;
+                        ball.vy = Math.sin(angToGoal) * 14.8;
+                        ball.x = p.x + nx * (ball.r + 16);
+                        ball.y = (p.y + 8) + ny * (ball.r + 16);
+                        p.kickTimer = 12;
+                        return;
+                    }
+                    ball.vx = nx * pwr + p.vx * 0.55;
+                    ball.vy = ny * pwr + p.vy * 0.55;
+                    ball.x = p.x + nx * (ball.r + 16);
+                    ball.y = (p.y + 8) + ny * (ball.r + 16);
+                    p.kickTimer = 10;
+                }
+            });
+
+            const bSpd = Math.hypot(ball.vx, ball.vy);
+            if (bSpd > cfg.ballMaxSpeed) {
+                ball.vx = (ball.vx / bSpd) * cfg.ballMaxSpeed;
+                ball.vy = (ball.vy / bSpd) * cfg.ballMaxSpeed;
+            }
+
+            ball.x += ball.vx;
+            ball.y += ball.vy;
+            ball.vx *= cfg.friction;
+            ball.vy *= cfg.friction;
+            ball.spin += bSpd * 0.04;
+            updateBallTrail();
+
+            if (ball.y - ball.r < 14) {
+                ball.y = 14 + ball.r;
+                ball.vy = Math.abs(ball.vy);
+            } else if (ball.y + ball.r > H - 14) {
+                ball.y = H - 14 - ball.r;
+                ball.vy = -Math.abs(ball.vy);
+            }
+
+            // Cek Gol pada Gawang Kanan & Kiri (memperhitungkan tukar gawang Babak 2!)
+            const inGoalY = ball.y > goalTop && ball.y < goalBottom;
+            if (ball.x + ball.r > W - 16) {
+                if (inGoalY) {
+                    // Bola masuk gawang Kanan -> Tim yang menempati sisi Kiri mencetak gol!
+                    const scorerTeam = side1 === 'left' ? 1 : 2;
+                    handleGoalScored(scorerTeam);
+                } else {
+                    ball.x = W - 16 - ball.r;
+                    ball.vx = -Math.abs(ball.vx) * 0.85;
+                }
+            } else if (ball.x - ball.r < 16) {
+                if (inGoalY) {
+                    // Bola masuk gawang Kiri -> Tim yang menempati sisi Kanan mencetak gol!
+                    const scorerTeam = side1 === 'right' ? 1 : 2;
+                    handleGoalScored(scorerTeam);
+                } else {
+                    ball.x = 16 + ball.r;
+                    ball.vx = Math.abs(ball.vx) * 0.85;
+                }
+            }
+        }
+
+        function updatePhysics() {
+            if (!matchFinished) {
+                if (penaltyMode) updatePenaltyModePhysics();
+                else updateNormalPhysics();
+            }
+
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const pt = particles[i];
+                pt.x += pt.vx;
+                pt.y += pt.vy;
+                pt.life--;
+                if (pt.life <= 0) particles.splice(i, 1);
+            }
+        }
+
+        function drawPitch() {
+            const cols = 10;
+            const cw = W / cols;
+            for (let i = 0; i < cols; i++) {
+                ctx.fillStyle = i % 2 === 0 ? '#5C7C55' : '#4E6D47';
+                ctx.fillRect(i * cw, 0, cw, H);
+            }
+
+            ctx.strokeStyle = 'rgba(245, 239, 229, 0.82)';
+            ctx.lineWidth = 3;
+            ctx.strokeRect(16, 14, W - 32, H - 28);
+
+            ctx.beginPath();
+            ctx.moveTo(W / 2, 14);
+            ctx.lineTo(W / 2, H - 14);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(W / 2, H / 2, 64, 0, Math.PI * 2);
+            ctx.stroke();
+
+            ctx.strokeRect(16, H * 0.22, 110, H * 0.56);
+            ctx.strokeRect(W - 126, H * 0.22, 110, H * 0.56);
+
+            ctx.fillStyle = 'rgba(214, 40, 40, 0.25)';
+            ctx.fillRect(2, goalTop, 16, goalHeight);
+            ctx.fillRect(W - 18, goalTop, 16, goalHeight);
+
+            ctx.strokeStyle = '#FFFDF9';
+            ctx.lineWidth = 3;
+            ctx.strokeRect(2, goalTop, 16, goalHeight);
+            ctx.strokeRect(W - 18, goalTop, 16, goalHeight);
+
+            // Indikator instruksi langsung di lapangan saat Adu Penalti
+            if (penaltyMode && !goalLock && !matchFinished) {
+                ctx.save();
+                ctx.font = '800 13px Nunito, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillStyle = 'rgba(255, 253, 249, 0.92)';
+                ctx.strokeStyle = 'rgba(59, 41, 34, 0.85)';
+                ctx.lineWidth = 3;
+                const infoText = penTurnTeam === 1
+                    ? 'PENALTI: P1 (W/S + Tahan Spasi) Tembak Jauh  |  P2 (↑/↓ + Enter) Gerakkan Kiper!'
+                    : 'PENALTI: P2 (↑/↓ + Tahan Enter) Tembak Jauh  |  P1 (W/S + Spasi) Gerakkan Kiper!';
+                ctx.strokeText(infoText, W / 2, 34);
+                ctx.fillText(infoText, W / 2, 34);
+                ctx.restore();
+            }
+        }
+
+        function drawPlayerFigure(p, theme, isActive, isTeam1, chargeVal) {
+            ctx.save();
+
+            // Panah arah pemain aktif
+            if (isActive) {
+                const arrowDist = 30;
+                const ax = p.x + Math.cos(p.angle) * arrowDist;
+                const ay = p.y + Math.sin(p.angle) * arrowDist;
+
+                ctx.save();
+                ctx.translate(ax, ay);
+                ctx.rotate(p.angle);
+                ctx.beginPath();
+                ctx.moveTo(8, 0);
+                ctx.lineTo(-4.5, -5.5);
+                ctx.lineTo(-2, 0);
+                ctx.lineTo(-4.5, 5.5);
+                ctx.closePath();
+                ctx.fillStyle = isTeam1 ? '#FFE169' : '#FF7B54';
+                ctx.fill();
+                ctx.lineWidth = 1.4;
+                ctx.strokeStyle = '#3B2922';
+                ctx.stroke();
+                ctx.restore();
+
+                // Bar kekuatan tendangan jauh (Power Shot Meter) saat menahan tombol tendang
+                if (chargeVal > 0.02) {
+                    const barW = 34;
+                    const barH = 5;
+                    ctx.fillStyle = 'rgba(30, 19, 15, 0.8)';
+                    ctx.fillRect(p.x - barW / 2, p.y + 21, barW, barH);
+                    ctx.fillStyle = chargeVal > 0.7 ? '#D62828' : '#FFE169';
+                    ctx.fillRect(p.x - barW / 2, p.y + 21, barW * chargeVal, barH);
+                }
+            }
+
+            // Bayangan
+            ctx.beginPath();
+            ctx.ellipse(p.x, p.y + 16, 10.5, 4, 0, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(25, 35, 22, 0.34)';
+            ctx.fill();
+
+            // Kaki & sepatu
+            const swing = Math.sin(p.stride) * 5.2;
+            const kick = p.kickTimer > 0 ? 6 : 0;
+
+            ctx.strokeStyle = theme.skin;
+            ctx.lineWidth = 3.5;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.moveTo(p.x - 3.5, p.y + 7);
+            ctx.lineTo(p.x - 4.5 - swing, p.y + 15);
+            ctx.moveTo(p.x + 3.5, p.y + 7);
+            ctx.lineTo(p.x + 4.5 + swing + kick, p.y + 15);
+            ctx.stroke();
+
+            ctx.fillStyle = '#3B2922';
+            ctx.fillRect(p.x - 7 - swing, p.y + 13.5, 5.5, 3);
+            ctx.fillRect(p.x + 2.5 + swing + kick, p.y + 13.5, 5.5, 3);
+
+            // Celana pendek
+            ctx.fillStyle = theme.shorts;
+            ctx.beginPath();
+            ctx.roundRect(p.x - 7, p.y + 2.5, 14, 6, 2.5);
+            ctx.fill();
+
+            // Jersey
+            ctx.fillStyle = p.role === 'GK' ? '#F4C430' : theme.shirt;
+            ctx.beginPath();
+            ctx.roundRect(p.x - 8, p.y - 7.5, 16, 11.5, 3.5);
+            ctx.fill();
+            ctx.lineWidth = 1.4;
+            ctx.strokeStyle = theme.trim;
+            ctx.stroke();
+
+            // Lengan
+            ctx.strokeStyle = theme.skin;
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(p.x - 8, p.y - 4.5);
+            ctx.lineTo(p.x - 11.5, p.y + 1.5);
+            ctx.moveTo(p.x + 8, p.y - 4.5);
+            ctx.lineTo(p.x + 11.5, p.y + 1.5);
+            ctx.stroke();
+
+            // Kepala & rambut
+            ctx.beginPath();
+            ctx.arc(p.x, p.y - 12.5, 6.2, 0, Math.PI * 2);
+            ctx.fillStyle = theme.skin;
+            ctx.fill();
+            ctx.lineWidth = 1.3;
+            ctx.strokeStyle = '#3B2922';
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(p.x, p.y - 14, 6.2, Math.PI, Math.PI * 2);
+            ctx.fillStyle = theme.hair;
+            ctx.fill();
+
+            // Nama setiap pemain 5 vs 5
+            ctx.font = isActive ? '800 11px Nunito, sans-serif' : '700 10px Nunito, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillStyle = isActive ? '#FFE169' : '#FFFDF9';
+            ctx.strokeStyle = 'rgba(43, 30, 24, 0.85)';
+            ctx.lineWidth = 2.8;
+            const label = `${p.num}. ${p.name}`;
+            ctx.strokeText(label, p.x, p.y - 22.5);
+            ctx.fillText(label, p.x, p.y - 22.5);
+
+            ctx.restore();
+        }
+
+        function drawBall() {
+            // Efek jejak api/angin saat tendangan jarak jauh keras
+            ball.trail.forEach((tr, idx) => {
+                const ratio = (idx + 1) / ball.trail.length;
+                ctx.beginPath();
+                ctx.arc(tr.x, tr.y, ball.r * (0.4 + ratio * 0.5), 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 225, 105, ${ratio * 0.35})`;
+                ctx.fill();
+            });
+
+            ctx.save();
+            ctx.translate(ball.x, ball.y);
+            ctx.rotate(ball.spin);
+            ctx.beginPath();
+            ctx.arc(0, 0, ball.r, 0, Math.PI * 2);
+            ctx.fillStyle = '#FFFDF9';
+            ctx.fill();
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = '#3B2922';
+            ctx.stroke();
+            ctx.fillStyle = '#3B2922';
+            ctx.beginPath();
+            ctx.arc(0, 0, 3.5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        }
+
+        function drawParticles() {
+            particles.forEach(pt => {
+                ctx.fillStyle = pt.color;
+                ctx.beginPath();
+                ctx.arc(pt.x, pt.y, 4, 0, Math.PI * 2);
+                ctx.fill();
+            });
+        }
+
+        function loop() {
+            if (currentScreen !== 'game') return;
+
+            updatePhysics();
+            drawPitch();
+
+            const theme1 = JERSEY_THEMES[document.getElementById('jerseyLeft').value] || JERSEY_THEMES['red-white'];
+            const theme2 = JERSEY_THEMES[document.getElementById('jerseyRight').value] || JERSEY_THEMES['crimson-gold'];
+
+            const c1 = penaltyMode && penTurnTeam === 1 ? penCharge : p1Charge;
+            const c2 = penaltyMode && penTurnTeam === 2 ? penCharge : p2Charge;
+
+            team1Players.forEach((p, idx) => drawPlayerFigure(p, theme1, idx === activeTeam1Idx, true, c1));
+            team2Players.forEach((p, idx) => drawPlayerFigure(p, theme2, idx === activeTeam2Idx, false, c2));
+            drawBall();
+            drawParticles();
+
+            rafId = requestAnimationFrame(loop);
+        }
+
+        window.addEventListener('keydown', e => {
+            keys[e.code] = true;
+            if (currentScreen === 'game' && ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code)) {
+                e.preventDefault();
+            }
+        });
+
+        window.addEventListener('keyup', e => {
+            keys[e.code] = false;
+        });
+    </script>
+</body>
+</html>
